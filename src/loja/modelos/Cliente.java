@@ -29,16 +29,34 @@ public class Cliente extends Pessoa {
     public boolean temSaldoSuficiente(
         double valor
     ) {
-        return valor >= 0 && saldo >= valor;
+
+        return valor >= 0
+                && saldo >= valor;
     }
 
     public void descontarSaldo(
         double valor
     ) {
 
-        if (valor > 0 && valor <= saldo) {
+        if (
+            valor > 0
+            && valor <= saldo
+        ) {
             saldo = saldo - valor;
         }
+    }
+
+    public boolean adicionarSaldo(
+        double valor
+    ) {
+
+        if (valor <= 0) {
+            return false;
+        }
+
+        saldo = saldo + valor;
+
+        return true;
     }
 
     @Override

@@ -42,42 +42,86 @@ public class Produto implements Descontavel {
     }
 
     public void setPreco(double preco) {
-        this.preco = preco;
+
+        if (preco >= 0) {
+            this.preco = preco;
+        }
     }
 
-    public void setQuantidadeEmStock(int quantidadeEmStock) {
-        this.quantidadeEmStock = quantidadeEmStock;
+    public void setQuantidadeEmStock(
+        int quantidadeEmStock
+    ) {
+
+        if (quantidadeEmStock >= 0) {
+            this.quantidadeEmStock =
+                    quantidadeEmStock;
+        }
     }
 
-    public void setCategoria(String categoria) {
+    public void setCategoria(
+        String categoria
+    ) {
         this.categoria = categoria;
     }
 
     @Override
-    public void aplicarDesconto(double percentagem) {
+    public void aplicarDesconto(
+        double percentagem
+    ) {
 
-        if (percentagem > 0 && percentagem <= 100) {
-            preco = preco - (preco * percentagem / 100);
+        if (
+            percentagem > 0
+            && percentagem <= 100
+        ) {
+            preco = preco
+                    - (preco * percentagem / 100);
         }
     }
 
-    public String getInfo() {
-        return "Produto: " + nome
-                + " | Preço: " + String.format("%.2f", preco) + " €"
-                + " | Stock: " + quantidadeEmStock
-                + " | Categoria: " + categoria;
-    }
+    public boolean temStockSuficiente(
+        int quantidade
+    ) {
 
-    public boolean temStockSuficiente(int quantidade) {
         return quantidade > 0
-                && quantidadeEmStock >= quantidade;
+                && quantidadeEmStock
+                >= quantidade;
     }
 
-    public void reduzirStock(int quantidade) {
+    public void reduzirStock(
+        int quantidade
+    ) {
 
         if (temStockSuficiente(quantidade)) {
             quantidadeEmStock =
-                    quantidadeEmStock - quantidade;
-        }   
+                    quantidadeEmStock
+                    - quantidade;
+        }
+    }
+
+    public boolean adicionarStock(
+        int quantidade
+    ) {
+
+        if (quantidade <= 0) {
+            return false;
+        }
+
+        quantidadeEmStock =
+                quantidadeEmStock
+                + quantidade;
+
+        return true;
+    }
+
+    public String getInfo() {
+
+        return "Produto: " + nome
+                + " | Preço: "
+                + String.format("%.2f", preco)
+                + " €"
+                + " | Stock: "
+                + quantidadeEmStock
+                + " | Categoria: "
+                + categoria;
     }
 }

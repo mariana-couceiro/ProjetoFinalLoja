@@ -24,24 +24,17 @@ public class Loja {
         totalCompras = 0;
     }
 
-    public boolean registarProduto(
-        Produto produto
-    ) {
+    public boolean registarProduto(Produto produto) {
 
         if (produto == null) {
-            System.out.println(
-                "Produto inválido."
-            );
-
+            System.out.println("Produto inválido.");
             return false;
         }
 
         if (totalProdutos >= produtos.length) {
             System.out.println(
-                "Não existe espaço para registar "
-                + "mais produtos."
+                "Não existe espaço para registar mais produtos."
             );
-
             return false;
         }
 
@@ -55,15 +48,10 @@ public class Loja {
         return true;
     }
 
-    public boolean registarCliente(
-        Cliente cliente
-    ) {
+    public boolean registarCliente(Cliente cliente) {
 
         if (cliente == null) {
-            System.out.println(
-                "Cliente inválido."
-            );
-
+            System.out.println("Cliente inválido.");
             return false;
         }
 
@@ -74,17 +62,14 @@ public class Loja {
                     "Já existe um cliente com esse "
                     + "contacto telefónico."
                 );
-
                 return false;
             }
         }
 
         if (totalClientes >= clientes.length) {
             System.out.println(
-                "Não existe espaço para registar "
-                + "mais clientes."
+                "Não existe espaço para registar mais clientes."
             );
-
             return false;
         }
 
@@ -104,19 +89,14 @@ public class Loja {
             System.out.println(
                 "Não existem produtos registados."
             );
-
             return;
         }
 
-        System.out.println(
-            "\n--- PRODUTOS ---"
-        );
+        System.out.println("\n--- PRODUTOS ---");
 
         for (int i = 0; i < totalProdutos; i++) {
             System.out.println(
-                (i + 1)
-                + " - "
-                + produtos[i].getInfo()
+                (i + 1) + " - " + produtos[i].getInfo()
             );
         }
     }
@@ -127,45 +107,30 @@ public class Loja {
             System.out.println(
                 "Não existem clientes registados."
             );
-
             return;
         }
 
-        System.out.println(
-            "\n--- CLIENTES ---"
-        );
+        System.out.println("\n--- CLIENTES ---");
 
         for (int i = 0; i < totalClientes; i++) {
             System.out.println(
-                (i + 1)
-                + " - "
-                + clientes[i].getInfo()
+                (i + 1) + " - " + clientes[i].getInfo()
             );
         }
     }
 
-    public Produto getProduto(
-        int indice
-    ) {
+    public Produto getProduto(int indice) {
 
-        if (
-            indice < 0
-            || indice >= totalProdutos
-        ) {
+        if (indice < 0 || indice >= totalProdutos) {
             return null;
         }
 
         return produtos[indice];
     }
 
-    public Cliente getCliente(
-        int indice
-    ) {
+    public Cliente getCliente(int indice) {
 
-        if (
-            indice < 0
-            || indice >= totalClientes
-        ) {
+        if (indice < 0 || indice >= totalClientes) {
             return null;
         }
 
@@ -178,62 +143,41 @@ public class Loja {
         int quantidade
     ) {
 
-        if (
-            cliente == null
-            || produto == null
-        ) {
+        if (cliente == null || produto == null) {
             System.out.println(
                 "Cliente ou produto inválido."
             );
-
             return false;
         }
 
         if (quantidade <= 0) {
             System.out.println(
-                "A quantidade tem de ser "
-                + "superior a zero."
+                "A quantidade tem de ser superior a zero."
             );
-
             return false;
         }
 
-        if (
-            !produto.temStockSuficiente(
-                quantidade
-            )
-        ) {
+        if (!produto.temStockSuficiente(quantidade)) {
             System.out.println(
-                "Compra não realizada: "
-                + "stock insuficiente."
+                "Compra não realizada: stock insuficiente."
             );
-
             return false;
         }
 
         double valorTotal =
-                produto.getPreco()
-                * quantidade;
+                produto.getPreco() * quantidade;
 
-        if (
-            !cliente.temSaldoSuficiente(
-                valorTotal
-            )
-        ) {
+        if (!cliente.temSaldoSuficiente(valorTotal)) {
             System.out.println(
-                "Compra não realizada: "
-                + "saldo insuficiente."
+                "Compra não realizada: saldo insuficiente."
             );
-
             return false;
         }
 
         if (totalCompras >= compras.length) {
             System.out.println(
-                "Não existe espaço para registar "
-                + "mais compras."
+                "Não existe espaço para registar mais compras."
             );
-
             return false;
         }
 
@@ -253,9 +197,7 @@ public class Loja {
             "Compra realizada com sucesso."
         );
 
-        System.out.println(
-            compra.getInfo()
-        );
+        System.out.println(compra.getInfo());
 
         return true;
     }
@@ -265,10 +207,7 @@ public class Loja {
     ) {
 
         if (cliente == null) {
-            System.out.println(
-                "Cliente inválido."
-            );
-
+            System.out.println("Cliente inválido.");
             return;
         }
 
@@ -297,8 +236,7 @@ public class Loja {
 
         if (!encontrouCompra) {
             System.out.println(
-                "Este cliente ainda não "
-                + "realizou compras."
+                "Este cliente ainda não realizou compras."
             );
         }
     }
@@ -309,7 +247,6 @@ public class Loja {
             System.out.println(
                 "Ainda não existem compras registadas."
             );
-
             return;
         }
 
@@ -411,7 +348,6 @@ public class Loja {
             System.out.println(
                 "Não existem produtos registados."
             );
-
             return;
         }
 
@@ -448,5 +384,57 @@ public class Loja {
         );
 
         listarProdutos();
+    }
+
+    public boolean reporStock(
+        Produto produto,
+        int quantidade
+    ) {
+
+        if (produto == null) {
+            System.out.println("Produto inválido.");
+            return false;
+        }
+
+        if (!produto.adicionarStock(quantidade)) {
+            System.out.println(
+                "A quantidade tem de ser superior a zero."
+            );
+            return false;
+        }
+
+        System.out.println(
+            "Stock reposto com sucesso."
+        );
+
+        System.out.println(produto.getInfo());
+
+        return true;
+    }
+
+    public boolean adicionarSaldo(
+        Cliente cliente,
+        double valor
+    ) {
+
+        if (cliente == null) {
+            System.out.println("Cliente inválido.");
+            return false;
+        }
+
+        if (!cliente.adicionarSaldo(valor)) {
+            System.out.println(
+                "O valor tem de ser superior a zero."
+            );
+            return false;
+        }
+
+        System.out.println(
+            "Saldo adicionado com sucesso."
+        );
+
+        System.out.println(cliente.getInfo());
+
+        return true;
     }
 }

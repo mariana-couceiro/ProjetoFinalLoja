@@ -61,6 +61,14 @@ public class Main {
                     loja.ordenarProdutosPorPreco();
                     break;
 
+                case 10:
+                    reporStock(scanner, loja);
+                    break;
+
+                case 11:
+                    adicionarSaldo(scanner, loja);
+                    break;
+
                 case 0:
                     System.out.println(
                         "Programa terminado."
@@ -103,6 +111,8 @@ public class Main {
         System.out.println(
             "9 - Ordenar produtos por preço"
         );
+        System.out.println("10 - Repor stock");
+        System.out.println("11 - Adicionar saldo");
         System.out.println("0 - Sair");
     }
 
@@ -291,7 +301,6 @@ public class Main {
             System.out.println(
                 "Cliente inválido."
             );
-
             return;
         }
 
@@ -310,7 +319,6 @@ public class Main {
             System.out.println(
                 "Produto inválido."
             );
-
             return;
         }
 
@@ -350,7 +358,6 @@ public class Main {
             System.out.println(
                 "Cliente inválido."
             );
-
             return;
         }
 
@@ -381,7 +388,6 @@ public class Main {
             System.out.println(
                 "Produto inválido."
             );
-
             return;
         }
 
@@ -395,10 +401,8 @@ public class Main {
             || percentagem > 100
         ) {
             System.out.println(
-                "A percentagem deve estar "
-                + "entre 1 e 100."
+                "A percentagem deve estar entre 1 e 100."
             );
-
             return;
         }
 
@@ -415,6 +419,82 @@ public class Main {
         );
     }
 
+    public static void reporStock(
+        Scanner scanner,
+        Loja loja
+    ) {
+
+        System.out.println(
+            "\n--- REPOR STOCK ---"
+        );
+
+        loja.listarProdutos();
+
+        int numeroProduto = lerInteiro(
+            scanner,
+            "Número do produto: "
+        );
+
+        Produto produto = loja.getProduto(
+            numeroProduto - 1
+        );
+
+        if (produto == null) {
+            System.out.println(
+                "Produto inválido."
+            );
+            return;
+        }
+
+        int quantidade = lerInteiro(
+            scanner,
+            "Quantidade a adicionar: "
+        );
+
+        loja.reporStock(
+            produto,
+            quantidade
+        );
+    }
+
+    public static void adicionarSaldo(
+        Scanner scanner,
+        Loja loja
+    ) {
+
+        System.out.println(
+            "\n--- ADICIONAR SALDO ---"
+        );
+
+        loja.listarClientes();
+
+        int numeroCliente = lerInteiro(
+            scanner,
+            "Número do cliente: "
+        );
+
+        Cliente cliente = loja.getCliente(
+            numeroCliente - 1
+        );
+
+        if (cliente == null) {
+            System.out.println(
+                "Cliente inválido."
+            );
+            return;
+        }
+
+        double valor = lerDouble(
+            scanner,
+            "Valor a adicionar: "
+        );
+
+        loja.adicionarSaldo(
+            cliente,
+            valor
+        );
+    }
+
     public static int lerInteiro(
         Scanner scanner,
         String mensagem
@@ -428,14 +508,11 @@ public class Main {
                     .trim();
 
             try {
-                return Integer.parseInt(
-                    valor
-                );
+                return Integer.parseInt(valor);
 
             } catch (NumberFormatException erro) {
                 System.out.println(
-                    "Introduza um número "
-                    + "inteiro válido."
+                    "Introduza um número inteiro válido."
                 );
             }
         }
@@ -455,9 +532,7 @@ public class Main {
                     .replace(",", ".");
 
             try {
-                return Double.parseDouble(
-                    valor
-                );
+                return Double.parseDouble(valor);
 
             } catch (NumberFormatException erro) {
                 System.out.println(
