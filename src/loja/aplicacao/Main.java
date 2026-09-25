@@ -173,6 +173,7 @@ public class Main {
                 "3 - Consultar o meu histórico"
             );
             System.out.println("4 - Adicionar saldo");
+            System.out.println("5 - Pesquisar produtos");
             System.out.println(
                 "0 - Voltar ao menu principal"
             );
@@ -207,6 +208,13 @@ public class Main {
                         scanner,
                         loja,
                         cliente
+                    );
+                    break;
+
+                case 5:
+                    pesquisarProdutos(
+                        scanner,
+                        loja
                     );
                     break;
 
@@ -268,6 +276,9 @@ public class Main {
                 "9 - Listar todas as compras"
             );
             System.out.println(
+                "10 - Pesquisar produtos"
+            );
+            System.out.println(
                 "0 - Voltar ao menu principal"
             );
 
@@ -324,6 +335,13 @@ public class Main {
 
                 case 9:
                     loja.listarCompras();
+                    break;
+
+                case 10:
+                    pesquisarProdutos(
+                        scanner,
+                        loja
+                    );
                     break;
 
                 case 0:
@@ -624,6 +642,26 @@ public class Main {
         System.out.println(
             produto.getInfo()
         );
+    }
+
+    public static void pesquisarProdutos(
+        Scanner scanner,
+        Loja loja
+    ) {
+
+        System.out.println(
+            "\n--- PESQUISAR PRODUTOS ---"
+        );
+
+        System.out.print(
+            "Nome ou categoria: "
+        );
+
+        String termo = scanner
+                .nextLine()
+                .trim();
+
+        loja.procurarProdutos(termo);
     }
 
     public static void reporStock(

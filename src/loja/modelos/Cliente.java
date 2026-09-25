@@ -4,8 +4,6 @@ import java.util.Objects;
 
 public class Cliente extends Pessoa {
 
-    private static int proximoNumero = 1;
-
     private String codigoCliente;
     private double saldo;
 
@@ -15,18 +13,24 @@ public class Cliente extends Pessoa {
         double saldo
     ) {
         super(nome, contacto);
-
-        this.codigoCliente = String.format(
-            "C%03d",
-            proximoNumero
-        );
-
-        proximoNumero++;
         this.saldo = saldo;
     }
 
     public String getCodigoCliente() {
         return codigoCliente;
+    }
+
+    public void atribuirCodigoCliente(
+        String codigoCliente
+    ) {
+
+        if (
+            this.codigoCliente == null
+            && codigoCliente != null
+            && !codigoCliente.isBlank()
+        ) {
+            this.codigoCliente = codigoCliente;
+        }
     }
 
     public double getSaldo() {

@@ -13,6 +13,7 @@ public class Loja {
     private int totalProdutos;
     private int totalClientes;
     private int totalCompras;
+    private int proximoNumeroCliente;
 
     public Loja() {
 
@@ -23,6 +24,7 @@ public class Loja {
         totalProdutos = 0;
         totalClientes = 0;
         totalCompras = 0;
+        proximoNumeroCliente = 1;
 
         carregarDadosIniciais();
     }
@@ -69,26 +71,48 @@ public class Loja {
         );
         totalProdutos++;
 
-        clientes[totalClientes] = new Cliente(
+        adicionarClienteInicial(new Cliente(
             "Ana Silva",
             "912345678",
             100.00
-        );
-        totalClientes++;
+        ));
 
-        clientes[totalClientes] = new Cliente(
+        adicionarClienteInicial(new Cliente(
             "João Santos",
             "923456789",
             75.00
-        );
-        totalClientes++;
+        ));
 
-        clientes[totalClientes] = new Cliente(
+        adicionarClienteInicial(new Cliente(
             "Maria Costa",
             "934567890",
             150.00
+        ));
+    }
+
+    private void adicionarClienteInicial(
+        Cliente cliente
+    ) {
+
+        cliente.atribuirCodigoCliente(
+            gerarCodigoCliente()
         );
+
+        clientes[totalClientes] = cliente;
         totalClientes++;
+    }
+
+    // O contador só avança quando o cliente é realmente aceite.
+    private String gerarCodigoCliente() {
+
+        String codigo = String.format(
+            "C%03d",
+            proximoNumeroCliente
+        );
+
+        proximoNumeroCliente++;
+
+        return codigo;
     }
 
     public boolean registarProduto(
@@ -101,6 +125,26 @@ public class Loja {
             );
 
             return false;
+        }
+
+        for (int i = 0; i < totalProdutos; i++) {
+
+            boolean mesmoNome = produtos[i]
+                    .getNome()
+                    .equalsIgnoreCase(produto.getNome());
+
+            boolean mesmaCategoria = produtos[i]
+                    .getCategoria()
+                    .equalsIgnoreCase(produto.getCategoria());
+
+            if (mesmoNome && mesmaCategoria) {
+                System.out.println(
+                    "Já existe um produto com esse "
+                    + "nome e categoria."
+                );
+
+                return false;
+            }
         }
 
         if (totalProdutos >= produtos.length) {
@@ -155,6 +199,10 @@ public class Loja {
             return false;
         }
 
+        cliente.atribuirCodigoCliente(
+            gerarCodigoCliente()
+        );
+
         clientes[totalClientes] = cliente;
         totalClientes++;
 
@@ -189,6 +237,54 @@ public class Loja {
                 (i + 1)
                 + " - "
                 + produtos[i].getInfo()
+            );
+        }
+    }
+
+    public void procurarProdutos(
+        String termo
+    ) {
+
+        if (termo == null || termo.isBlank()) {
+            System.out.println(
+                "O termo de pesquisa é obrigatório."
+            );
+
+            return;
+        }
+
+        boolean encontrou = false;
+
+        System.out.println(
+            "\n--- RESULTADOS DA PESQUISA ---"
+        );
+
+        for (int i = 0; i < totalProdutos; i++) {
+
+            boolean correspondeNome = produtos[i]
+                    .getNome()
+                    .toLowerCase()
+                    .contains(termo.toLowerCase());
+
+            boolean correspondeCategoria = produtos[i]
+                    .getCategoria()
+                    .toLowerCase()
+                    .contains(termo.toLowerCase());
+
+            if (correspondeNome || correspondeCategoria) {
+                System.out.println(
+                    (i + 1)
+                    + " - "
+                    + produtos[i].getInfo()
+                );
+
+                encontrou = true;
+            }
+        }
+
+        if (!encontrou) {
+            System.out.println(
+                "Não foram encontrados produtos."
             );
         }
     }
@@ -426,6 +522,7 @@ public class Loja {
             return;
         }
 
+        // Soma as quantidades vendidas de cada produto.
         Produto produtoMaisVendido = null;
         int maiorQuantidadeVendida = 0;
 
@@ -457,6 +554,7 @@ public class Loja {
             }
         }
 
+        // Soma o valor das compras efetuadas por cada cliente.
         Cliente clienteQueMaisGastou = null;
         double maiorValorGasto = 0;
 
@@ -561,6 +659,7 @@ public class Loja {
             return;
         }
 
+        // Ordenação Bubble Sort por preço crescente.
         for (
             int i = 0;
             i < totalProdutos - 1;
