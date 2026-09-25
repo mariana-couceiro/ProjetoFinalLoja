@@ -4,6 +4,9 @@ import java.util.Objects;
 
 public class Cliente extends Pessoa {
 
+    private static int proximoNumero = 1;
+
+    private String codigoCliente;
     private double saldo;
 
     public Cliente(
@@ -12,7 +15,18 @@ public class Cliente extends Pessoa {
         double saldo
     ) {
         super(nome, contacto);
+
+        this.codigoCliente = String.format(
+            "C%03d",
+            proximoNumero
+        );
+
+        proximoNumero++;
         this.saldo = saldo;
+    }
+
+    public String getCodigoCliente() {
+        return codigoCliente;
     }
 
     public double getSaldo() {
@@ -29,19 +43,14 @@ public class Cliente extends Pessoa {
     public boolean temSaldoSuficiente(
         double valor
     ) {
-
-        return valor >= 0
-                && saldo >= valor;
+        return valor >= 0 && saldo >= valor;
     }
 
     public void descontarSaldo(
         double valor
     ) {
 
-        if (
-            valor > 0
-            && valor <= saldo
-        ) {
+        if (valor > 0 && valor <= saldo) {
             saldo = saldo - valor;
         }
     }
@@ -62,7 +71,10 @@ public class Cliente extends Pessoa {
     @Override
     public String getInfo() {
 
-        return super.getInfo()
+        return "Código: "
+                + codigoCliente
+                + " | "
+                + super.getInfo()
                 + " | Saldo: "
                 + String.format("%.2f", saldo)
                 + " €";

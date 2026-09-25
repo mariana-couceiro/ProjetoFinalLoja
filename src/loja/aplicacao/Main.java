@@ -3,6 +3,7 @@ package loja.aplicacao;
 import java.util.Scanner;
 
 import loja.modelos.Cliente;
+import loja.modelos.Funcionario;
 import loja.modelos.Produto;
 import loja.sistema.Loja;
 
@@ -13,10 +14,17 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         Loja loja = new Loja();
 
+        Funcionario funcionario =
+                new Funcionario(
+                    "Funcionário Principal",
+                    "900000000",
+                    "F001"
+                );
+
         int opcao;
 
         do {
-            mostrarMenu();
+            mostrarMenuPrincipal();
 
             opcao = lerInteiro(
                 scanner,
@@ -26,47 +34,18 @@ public class Main {
             switch (opcao) {
 
                 case 1:
-                    registarProduto(scanner, loja);
+                    entrarAreaCliente(
+                        scanner,
+                        loja
+                    );
                     break;
 
                 case 2:
-                    loja.listarProdutos();
-                    break;
-
-                case 3:
-                    registarCliente(scanner, loja);
-                    break;
-
-                case 4:
-                    loja.listarClientes();
-                    break;
-
-                case 5:
-                    realizarCompra(scanner, loja);
-                    break;
-
-                case 6:
-                    consultarHistorico(scanner, loja);
-                    break;
-
-                case 7:
-                    aplicarDesconto(scanner, loja);
-                    break;
-
-                case 8:
-                    loja.mostrarRelatorio();
-                    break;
-
-                case 9:
-                    loja.ordenarProdutosPorPreco();
-                    break;
-
-                case 10:
-                    reporStock(scanner, loja);
-                    break;
-
-                case 11:
-                    adicionarSaldo(scanner, loja);
+                    menuFuncionario(
+                        scanner,
+                        loja,
+                        funcionario
+                    );
                     break;
 
                 case 0:
@@ -86,34 +65,280 @@ public class Main {
         scanner.close();
     }
 
-    public static void mostrarMenu() {
+    public static void mostrarMenuPrincipal() {
 
         System.out.println(
             "\n=============================="
         );
-
         System.out.println(
-            "    SISTEMA DE GESTÃO DE LOJA"
+            "       SISTEMA DA LOJA"
         );
-
         System.out.println(
             "=============================="
         );
 
-        System.out.println("1 - Registar produto");
-        System.out.println("2 - Listar produtos");
-        System.out.println("3 - Registar cliente");
-        System.out.println("4 - Listar clientes");
-        System.out.println("5 - Realizar compra");
-        System.out.println("6 - Consultar histórico");
-        System.out.println("7 - Aplicar desconto");
-        System.out.println("8 - Ver relatório");
-        System.out.println(
-            "9 - Ordenar produtos por preço"
-        );
-        System.out.println("10 - Repor stock");
-        System.out.println("11 - Adicionar saldo");
+        System.out.println("1 - Área do cliente");
+        System.out.println("2 - Área do funcionário");
         System.out.println("0 - Sair");
+    }
+
+    public static void entrarAreaCliente(
+        Scanner scanner,
+        Loja loja
+    ) {
+
+        System.out.println(
+            "\n--- IDENTIFICAÇÃO DO CLIENTE ---"
+        );
+
+        System.out.print(
+            "Código de cliente (ex. c001): "
+        );
+
+        String codigoCliente =
+                scanner.nextLine()
+                .trim()
+                .toUpperCase();
+
+        if (!codigoCliente.matches("C\\d{3,}")) {
+            System.out.println(
+                "Código de cliente inválido."
+            );
+
+            return;
+        }
+
+        Cliente cliente =
+                loja.procurarClientePorCodigo(
+                    codigoCliente
+                );
+
+        if (cliente == null) {
+            System.out.println(
+                "Não existe nenhum cliente "
+                + "com esse código."
+            );
+
+            return;
+        }
+
+        menuCliente(
+            scanner,
+            loja,
+            cliente
+        );
+    }
+
+    public static void menuCliente(
+        Scanner scanner,
+        Loja loja,
+        Cliente cliente
+    ) {
+
+        int opcao;
+
+        do {
+            System.out.println(
+                "\n=============================="
+            );
+            System.out.println(
+                "       ÁREA DO CLIENTE"
+            );
+            System.out.println(
+                "=============================="
+            );
+
+            System.out.println(
+                "Código: "
+                + cliente.getCodigoCliente()
+            );
+
+            System.out.println(
+                "Cliente: "
+                + cliente.getNome()
+            );
+
+            System.out.println(
+                "Saldo: "
+                + String.format(
+                    "%.2f",
+                    cliente.getSaldo()
+                )
+                + " €"
+            );
+
+            System.out.println("1 - Listar produtos");
+            System.out.println("2 - Realizar compra");
+            System.out.println(
+                "3 - Consultar o meu histórico"
+            );
+            System.out.println("4 - Adicionar saldo");
+            System.out.println(
+                "0 - Voltar ao menu principal"
+            );
+
+            opcao = lerInteiro(
+                scanner,
+                "Escolha uma opção: "
+            );
+
+            switch (opcao) {
+
+                case 1:
+                    loja.listarProdutos();
+                    break;
+
+                case 2:
+                    realizarCompraCliente(
+                        scanner,
+                        loja,
+                        cliente
+                    );
+                    break;
+
+                case 3:
+                    loja.consultarHistorico(
+                        cliente
+                    );
+                    break;
+
+                case 4:
+                    adicionarSaldoCliente(
+                        scanner,
+                        loja,
+                        cliente
+                    );
+                    break;
+
+                case 0:
+                    System.out.println(
+                        "A sair da área do cliente."
+                    );
+                    break;
+
+                default:
+                    System.out.println(
+                        "Opção inválida."
+                    );
+            }
+
+        } while (opcao != 0);
+    }
+
+    public static void menuFuncionario(
+        Scanner scanner,
+        Loja loja,
+        Funcionario funcionario
+    ) {
+
+        int opcao;
+
+        do {
+            System.out.println(
+                "\n=============================="
+            );
+            System.out.println(
+                "     ÁREA DO FUNCIONÁRIO"
+            );
+            System.out.println(
+                "=============================="
+            );
+
+            System.out.println(
+                "Funcionário: "
+                + funcionario.getNome()
+            );
+
+            System.out.println(
+                "Número: "
+                + funcionario.getNumeroFuncionario()
+            );
+
+            System.out.println("1 - Registar produto");
+            System.out.println("2 - Listar produtos");
+            System.out.println("3 - Registar cliente");
+            System.out.println("4 - Listar clientes");
+            System.out.println("5 - Aplicar desconto");
+            System.out.println("6 - Ver relatório");
+            System.out.println(
+                "7 - Ordenar produtos por preço"
+            );
+            System.out.println("8 - Repor stock");
+            System.out.println(
+                "9 - Listar todas as compras"
+            );
+            System.out.println(
+                "0 - Voltar ao menu principal"
+            );
+
+            opcao = lerInteiro(
+                scanner,
+                "Escolha uma opção: "
+            );
+
+            switch (opcao) {
+
+                case 1:
+                    registarProduto(
+                        scanner,
+                        loja
+                    );
+                    break;
+
+                case 2:
+                    loja.listarProdutos();
+                    break;
+
+                case 3:
+                    registarCliente(
+                        scanner,
+                        loja
+                    );
+                    break;
+
+                case 4:
+                    loja.listarClientes();
+                    break;
+
+                case 5:
+                    aplicarDesconto(
+                        scanner,
+                        loja
+                    );
+                    break;
+
+                case 6:
+                    loja.mostrarRelatorio();
+                    break;
+
+                case 7:
+                    loja.ordenarProdutosPorPreco();
+                    break;
+
+                case 8:
+                    reporStock(
+                        scanner,
+                        loja
+                    );
+                    break;
+
+                case 9:
+                    loja.listarCompras();
+                    break;
+
+                case 0:
+                    System.out.println(
+                        "A sair da área do funcionário."
+                    );
+                    break;
+
+                default:
+                    System.out.println(
+                        "Opção inválida."
+                    );
+            }
+
+        } while (opcao != 0);
     }
 
     public static void registarProduto(
@@ -175,7 +400,9 @@ public class Main {
 
         do {
             System.out.print("Categoria: ");
-            categoria = scanner.nextLine().trim();
+
+            categoria =
+                    scanner.nextLine().trim();
 
             if (categoria.isBlank()) {
                 System.out.println(
@@ -212,8 +439,9 @@ public class Main {
 
             if (!nomeValido(nome)) {
                 System.out.println(
-                    "Nome inválido. Introduza duas palavras, "
-                    + "ambas começadas por letra maiúscula."
+                    "Nome inválido. Introduza duas "
+                    + "palavras, ambas começadas "
+                    + "por letra maiúscula."
                 );
             }
 
@@ -226,7 +454,8 @@ public class Main {
                 "Contacto telefónico: "
             );
 
-            contacto = scanner.nextLine().trim();
+            contacto =
+                    scanner.nextLine().trim();
 
             if (!contacto.matches("9\\d{8}")) {
                 System.out.println(
@@ -277,32 +506,15 @@ public class Main {
         return nome.matches(formatoNome);
     }
 
-    public static void realizarCompra(
+    public static void realizarCompraCliente(
         Scanner scanner,
-        Loja loja
+        Loja loja,
+        Cliente cliente
     ) {
 
         System.out.println(
             "\n--- REALIZAR COMPRA ---"
         );
-
-        loja.listarClientes();
-
-        int numeroCliente = lerInteiro(
-            scanner,
-            "Número do cliente: "
-        );
-
-        Cliente cliente = loja.getCliente(
-            numeroCliente - 1
-        );
-
-        if (cliente == null) {
-            System.out.println(
-                "Cliente inválido."
-            );
-            return;
-        }
 
         loja.listarProdutos();
 
@@ -319,6 +531,7 @@ public class Main {
             System.out.println(
                 "Produto inválido."
             );
+
             return;
         }
 
@@ -334,34 +547,25 @@ public class Main {
         );
     }
 
-    public static void consultarHistorico(
+    public static void adicionarSaldoCliente(
         Scanner scanner,
-        Loja loja
+        Loja loja,
+        Cliente cliente
     ) {
 
         System.out.println(
-            "\n--- CONSULTAR HISTÓRICO ---"
+            "\n--- ADICIONAR SALDO ---"
         );
 
-        loja.listarClientes();
-
-        int numeroCliente = lerInteiro(
+        double valor = lerDouble(
             scanner,
-            "Número do cliente: "
+            "Valor a adicionar: "
         );
 
-        Cliente cliente = loja.getCliente(
-            numeroCliente - 1
+        loja.adicionarSaldo(
+            cliente,
+            valor
         );
-
-        if (cliente == null) {
-            System.out.println(
-                "Cliente inválido."
-            );
-            return;
-        }
-
-        loja.consultarHistorico(cliente);
     }
 
     public static void aplicarDesconto(
@@ -388,6 +592,7 @@ public class Main {
             System.out.println(
                 "Produto inválido."
             );
+
             return;
         }
 
@@ -401,8 +606,10 @@ public class Main {
             || percentagem > 100
         ) {
             System.out.println(
-                "A percentagem deve estar entre 1 e 100."
+                "A percentagem deve estar "
+                + "entre 1 e 100."
             );
+
             return;
         }
 
@@ -443,6 +650,7 @@ public class Main {
             System.out.println(
                 "Produto inválido."
             );
+
             return;
         }
 
@@ -457,44 +665,6 @@ public class Main {
         );
     }
 
-    public static void adicionarSaldo(
-        Scanner scanner,
-        Loja loja
-    ) {
-
-        System.out.println(
-            "\n--- ADICIONAR SALDO ---"
-        );
-
-        loja.listarClientes();
-
-        int numeroCliente = lerInteiro(
-            scanner,
-            "Número do cliente: "
-        );
-
-        Cliente cliente = loja.getCliente(
-            numeroCliente - 1
-        );
-
-        if (cliente == null) {
-            System.out.println(
-                "Cliente inválido."
-            );
-            return;
-        }
-
-        double valor = lerDouble(
-            scanner,
-            "Valor a adicionar: "
-        );
-
-        loja.adicionarSaldo(
-            cliente,
-            valor
-        );
-    }
-
     public static int lerInteiro(
         Scanner scanner,
         String mensagem
@@ -503,16 +673,16 @@ public class Main {
         while (true) {
             System.out.print(mensagem);
 
-            String valor = scanner
-                    .nextLine()
-                    .trim();
+            String valor =
+                    scanner.nextLine().trim();
 
             try {
                 return Integer.parseInt(valor);
 
             } catch (NumberFormatException erro) {
                 System.out.println(
-                    "Introduza um número inteiro válido."
+                    "Introduza um número "
+                    + "inteiro válido."
                 );
             }
         }
