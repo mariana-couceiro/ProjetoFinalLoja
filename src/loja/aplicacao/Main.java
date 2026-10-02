@@ -558,10 +558,35 @@ public class Main {
             "Quantidade: "
         );
 
+        double percentagemCupao;
+
+        do {
+            percentagemCupao = lerDouble(
+                scanner,
+                "Percentagem do cupão "
+                + "(0 para não usar): "
+            );
+
+            if (
+                percentagemCupao < 0
+                || percentagemCupao > 100
+            ) {
+                System.out.println(
+                    "A percentagem deve estar "
+                    + "entre 0 e 100%."
+                );
+            }
+
+        } while (
+            percentagemCupao < 0
+            || percentagemCupao > 100
+        );
+
         loja.realizarCompra(
             cliente,
             produto,
-            quantidade
+            quantidade,
+            percentagemCupao
         );
     }
 

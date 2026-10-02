@@ -384,7 +384,8 @@ public class Loja {
     public boolean realizarCompra(
         Cliente cliente,
         Produto produto,
-        int quantidade
+        int quantidade,
+        double percentagemCupao
     ) {
 
         if (
@@ -408,6 +409,18 @@ public class Loja {
         }
 
         if (
+            percentagemCupao < 0
+            || percentagemCupao > 100
+        ) {
+            System.out.println(
+                "A percentagem do cupão deve estar "
+                + "entre 0 e 100%."
+            );
+
+            return false;
+        }
+
+        if (
             !produto.temStockSuficiente(
                 quantidade
             )
@@ -415,23 +428,6 @@ public class Loja {
             System.out.println(
                 "Compra não realizada: "
                 + "stock insuficiente."
-            );
-
-            return false;
-        }
-
-        double valorTotal =
-                produto.getPreco()
-                * quantidade;
-
-        if (
-            !cliente.temSaldoSuficiente(
-                valorTotal
-            )
-        ) {
-            System.out.println(
-                "Compra não realizada: "
-                + "saldo insuficiente."
             );
 
             return false;
@@ -451,6 +447,28 @@ public class Loja {
             produto,
             quantidade
         );
+
+        if (percentagemCupao > 0) {
+            compra.aplicarDesconto(
+                percentagemCupao
+            );
+        }
+
+        double valorTotal =
+                compra.getValorTotal();
+
+        if (
+            !cliente.temSaldoSuficiente(
+                valorTotal
+            )
+        ) {
+            System.out.println(
+                "Compra não realizada: "
+                + "saldo insuficiente."
+            );
+
+            return false;
+        }
 
         produto.reduzirStock(quantidade);
         cliente.descontarSaldo(valorTotal);
